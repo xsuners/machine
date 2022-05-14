@@ -1,31 +1,37 @@
 package condition
 
 import (
-	"shepin.live/go/machine"
+	"fmt"
+
+	"shepin.live/go/machine/composite"
+	"shepin.live/go/machine/context"
+	"shepin.live/go/machine/node"
+	"shepin.live/go/machine/spec"
 )
 
-type sequence struct {
-	props map[string]interface{}
-	nodes []machine.Node
+type condition struct {
+	node.Node
+	nodes []node.Node
 }
 
-func New(props map[string]interface{}) machine.Node {
-	return &sequence{
-		props: props,
+func New(c *spec.Node) node.Node {
+	return &condition{
+		Node: composite.New(c),
 	}
 }
 
-func (s *sequence) Id() string
-
-func (s *sequence) Exec(ctx *machine.Context) (machine.Result, error) {
-	return "", nil
+func (n *condition) Exec(ctx *context.Context) (node.Result, error) {
+	fmt.Println("sequence exec")
+	for _, node := range n.nodes {
+		ret, err := node.Exec(ctx)
+		if err != nil {
+			return ret, err
+		}
+	}
+	return node.Success, nil
 }
 
-func (s *sequence) Children(nodes ...machine.Node) map[string]machine.Node {
-	s.nodes = append(s.nodes, nodes...)
-	out := make(map[string]machine.Node)
-	for _, node := range s.nodes {
-		out[node.Id()] = node
-	}
-	return out
+func (n *condition) Children(nodes ...node.Node) map[string]node.Node {
+	n.nodes = append(n.nodes, nodes...)
+	return n.Node.Children(nodes...)
 }

@@ -1,3 +1,3 @@
-package machine
+package server
 
 type Server interface{}

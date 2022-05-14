@@ -1,44 +1,51 @@
 package machine
 
 import (
-	"github.com/nats-io/nats.go"
+	"fmt"
+	"time"
+
+	"shepin.live/go/machine/action/record"
+	"shepin.live/go/machine/composite/sequence"
+	"shepin.live/go/machine/context"
+	"shepin.live/go/machine/node"
+	"shepin.live/go/machine/server/mq"
+	"shepin.live/go/machine/server/rpc"
 	"shepin.live/go/machine/spec"
 )
 
-type Handler struct {
-	Root Node
-}
-
 type Machine struct {
-	events map[string]*Event
+	c    *spec.Machine
+	mqs  []mq.Handler
+	rpcs []rpc.Handler
 }
 
-func New(s *spec.Specification) *Machine {
-	for _, rpc := range s.Rpcs {
-		build(rpc.Root)
+func New(s *spec.Machine) *Machine {
+	m := &Machine{
+		c: s,
 	}
-	return &Machine{}
+	for _, c := range s.Mq {
+		m.mqs = append(m.mqs, mq.Build(c))
+	}
+	for _, c := range s.Rpcs {
+		m.rpcs = append(m.rpcs, rpc.Build(c))
+	}
+	return m
 }
 
-func build(cfg *spec.Node) Node {
-	builder, ok := registry[cfg.Name]
-	if !ok {
-		panic("node not found")
-	}
-	node := builder(cfg.Config)
-	for _, child := range cfg.Children {
-		node.Children(build(child))
-	}
-	return node
+func init() {
+	node.Register("sequence", sequence.New)
+	node.Register("record", record.New)
 }
 
-func (m *Machine) context(in *nats.Msg) *Context {
-	return &Context{
-		machine: m,
-		memory:  newbb(nil),
+func (m *Machine) Boot() {
+	fmt.Println("boot")
+	for i := 0; i < 10; i++ {
+		for _, m := range m.mqs {
+			m.Handle(context.New())
+		}
+		for _, r := range m.rpcs {
+			r.Handle(context.New())
+		}
+		time.Sleep(time.Second * 5)
 	}
-}
-
-func (m *Machine) Init() {
-	// sub(m.events)
 }

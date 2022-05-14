@@ -1,52 +1,27 @@
 package spec
 
-type Machine struct {
-	States []State
-	Api    []Api
-}
-
-type Param struct {
-	Name       string
-	Type       string
-	Validation string
-}
-type Body struct{}
-
-type Api struct {
-	Url    string
-	Params []Param
-	Body   Body
-}
-
-type Action struct{}
-
-type State struct {
-	Name   string
-	Code   string
-	Events []Event
-}
-
-type Event struct {
-	Action []Action
-}
-
-type Specification struct {
+type Spec struct {
 	Machine Machine
+}
 
+type Machine struct {
 	Rpcs []*Rpc
 	Mq   []*Mq
 }
 
 type Rpc struct {
 	Root *Node
+	Path string
 }
 
 type Mq struct {
-	Root *Node
+	Root    *Node
+	Subject string
 }
 
 type Node struct {
+	Type     string
 	Name     string
-	Config   map[string]interface{}
+	Props    map[string]interface{}
 	Children []*Node
 }
