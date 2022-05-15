@@ -3,14 +3,14 @@ package composite
 import (
 	"fmt"
 
-	"shepin.live/go/machine/context"
-	"shepin.live/go/machine/node"
-	"shepin.live/go/machine/spec"
+	"github.com/xsuners/machine/context"
+	"github.com/xsuners/machine/node"
+	"github.com/xsuners/machine/spec"
 )
 
 type composite struct {
 	name  string
-	props map[string]interface{}
+	props map[string]any
 	nodes map[string]node.Node
 }
 
@@ -25,9 +25,9 @@ func (n *composite) Name() string {
 	return n.name
 }
 
-func (n *composite) Exec(ctx *context.Context) (node.Result, error) {
+func (n *composite) Exec(ctx *context.Context) error {
 	fmt.Println("composite exec")
-	return node.Success, nil
+	return nil
 }
 
 func (n *composite) Children(nodes ...node.Node) map[string]node.Node {

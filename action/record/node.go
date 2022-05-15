@@ -3,10 +3,10 @@ package record
 import (
 	"fmt"
 
-	"shepin.live/go/machine/action"
-	"shepin.live/go/machine/context"
-	"shepin.live/go/machine/node"
-	"shepin.live/go/machine/spec"
+	"github.com/xsuners/machine/action"
+	"github.com/xsuners/machine/context"
+	"github.com/xsuners/machine/node"
+	"github.com/xsuners/machine/spec"
 )
 
 type record struct {
@@ -19,7 +19,7 @@ func New(s *spec.Node) node.Node {
 	}
 }
 
-func (n *record) Exec(ctx *context.Context) (node.Result, error) {
+func (n *record) Exec(ctx *context.Context) error {
 	fmt.Println("record exec", n.Name())
-	return node.Success, nil
+	return nil
 }

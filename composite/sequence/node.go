@@ -3,10 +3,10 @@ package sequence
 import (
 	"fmt"
 
-	"shepin.live/go/machine/composite"
-	"shepin.live/go/machine/context"
-	"shepin.live/go/machine/node"
-	"shepin.live/go/machine/spec"
+	"github.com/xsuners/machine/composite"
+	"github.com/xsuners/machine/context"
+	"github.com/xsuners/machine/node"
+	"github.com/xsuners/machine/spec"
 )
 
 type sequence struct {
@@ -20,15 +20,15 @@ func New(c *spec.Node) node.Node {
 	}
 }
 
-func (n *sequence) Exec(ctx *context.Context) (node.Result, error) {
+func (n *sequence) Exec(ctx *context.Context) error {
 	fmt.Println("sequence exec")
 	for _, node := range n.nodes {
-		ret, err := node.Exec(ctx)
+		err := node.Exec(ctx)
 		if err != nil {
-			return ret, err
+			return err
 		}
 	}
-	return node.Success, nil
+	return nil
 }
 
 func (n *sequence) Children(nodes ...node.Node) map[string]node.Node {

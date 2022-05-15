@@ -1,9 +1,9 @@
 package mq
 
 import (
-	"shepin.live/go/machine/context"
-	"shepin.live/go/machine/node"
-	"shepin.live/go/machine/spec"
+	"github.com/xsuners/machine/context"
+	"github.com/xsuners/machine/node"
+	"github.com/xsuners/machine/spec"
 )
 
 type Handler interface {

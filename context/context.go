@@ -1,6 +1,7 @@
 package context
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -8,23 +9,29 @@ import (
 	"sync"
 
 	"github.com/nats-io/nats.go"
+	"github.com/xsuners/machine/spec"
 )
 
 type Context struct {
-	order   interface{}
+	context.Context
+
 	request *http.Request
 	message *nats.Msg
 	mu      sync.RWMutex
-	m       map[string]interface{}
+	m       map[string]any
+
+	In spec.Message
 }
 
-func New(ins ...interface{}) *Context {
-	ctx := new(Context)
+func New(ins ...any) *Context {
+	ctx := &Context{
+		Context: context.Background(),
+	}
 	for _, in := range ins {
 		switch m := in.(type) {
 		case *nats.Msg:
 			ctx.message = m
-			var data interface{}
+			var data any
 			err := json.Unmarshal(m.Data, &data)
 			if err != nil {
 				return ctx
@@ -40,7 +47,7 @@ func New(ins ...interface{}) *Context {
 			}
 			decoder := json.NewDecoder(m.Body)
 			defer m.Body.Close()
-			var data interface{}
+			var data any
 			err := decoder.Decode(&data)
 			if err != nil {
 				return ctx
@@ -54,7 +61,7 @@ func New(ins ...interface{}) *Context {
 	return ctx
 }
 
-func (ctx *Context) Get(path string) (interface{}, bool) {
+func (ctx *Context) Get(path string) (any, bool) {
 	parts := strings.Split(path, ".")
 	ctx.mu.RLock()
 	defer ctx.mu.RUnlock()
@@ -81,7 +88,7 @@ func (ctx *Context) Get(path string) (interface{}, bool) {
 			data, ok := (*t)[part]
 			return data, ok
 		}
-		d, ok := (*t)[part].(map[string]interface{})
+		d, ok := (*t)[part].(map[string]any)
 		if !ok {
 			fmt.Println("zhe", path)
 			return nil, false
@@ -91,12 +98,12 @@ func (ctx *Context) Get(path string) (interface{}, bool) {
 	return nil, false
 }
 
-func (ctx *Context) Set(path string, data interface{}) error {
+func (ctx *Context) Set(path string, data any) error {
 	parts := strings.Split(path, ".")
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
 	if ctx.m == nil {
-		ctx.m = make(map[string]interface{})
+		ctx.m = make(map[string]any)
 	}
 	t := &ctx.m
 	for i, part := range parts {
@@ -105,12 +112,12 @@ func (ctx *Context) Set(path string, data interface{}) error {
 			return nil
 		}
 		if _, ok := (*t)[part]; !ok {
-			o := make(map[string]interface{})
+			o := make(map[string]any)
 			(*t)[part] = o
 			t = &o
 			continue
 		} else {
-			d, ok := (*t)[part].(map[string]interface{})
+			d, ok := (*t)[part].(map[string]any)
 			if !ok {
 				return fmt.Errorf("path %s has not map value", path)
 			}

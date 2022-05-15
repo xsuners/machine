@@ -1,3 +1,3 @@
 package server
 
-type Server interface{}
+type Server any

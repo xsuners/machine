@@ -1,21 +1,13 @@
 package node
 
 import (
-	"shepin.live/go/machine/context"
-	"shepin.live/go/machine/spec"
-)
-
-type Result string
-
-const (
-	Success Result = "success"
-	Failure Result = "failure"
-	Running Result = "running"
+	"github.com/xsuners/machine/context"
+	"github.com/xsuners/machine/spec"
 )
 
 type Node interface {
 	Name() string
-	Exec(ctx *context.Context) (Result, error)
+	Exec(ctx *context.Context) error
 	Children(...Node) map[string]Node
 }
 
