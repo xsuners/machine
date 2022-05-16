@@ -22,6 +22,7 @@ func New(s *spec.Node) node.Node {
 }
 
 func (n *update) Exec(ctx *context.Context) error {
+	log.Infosc(ctx, "create exec", zap.Any("update", ctx.In.Update))
 	u := ctx.In.Update
 	set, vals := util.Set(u.Props)
 	cons, vals := util.Where(u.Queries, vals...)

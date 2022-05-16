@@ -3,6 +3,7 @@ package machine
 import (
 	"fmt"
 
+	"github.com/xsuners/machine/action/convert"
 	"github.com/xsuners/machine/action/create"
 	"github.com/xsuners/machine/action/list"
 	"github.com/xsuners/machine/action/record"
@@ -40,6 +41,7 @@ func init() {
 	node.Register("record", record.New)
 	node.Register("create", create.New)
 	node.Register("update", update.New)
+	node.Register("convert", convert.New)
 	node.Register("list", list.New)
 
 	node.Register("sequence", sequence.New)
@@ -50,28 +52,28 @@ func (m *Machine) Boot() {
 	ctx := context.New()
 	ctx.In = spec.Message{
 		List: spec.List{
-			Database: "group",
-			Table:    "t_member",
+			Database: "machine",
+			Table:    "user",
 			Selects: []*spec.Select{
 				{
 					Prop: "id",
 					Kind: types.Int,
 				},
 				{
-					Prop: "userid",
-					Kind: types.Int,
+					Prop: "name",
+					Kind: types.String,
 				},
 				{
-					Prop: "groupid",
-					Kind: types.Int,
+					Prop: "phone",
+					Kind: types.String,
 				},
 			},
 			Queries: []*spec.Query{
 				{
 					Type:   types.Gt,
-					Prop:   "userid",
-					Kind:   types.Int,
-					Values: []any{0},
+					Prop:   "name",
+					Kind:   types.String,
+					Values: []any{"machine"},
 				},
 				{
 					Type:   types.Lt,
@@ -86,26 +88,26 @@ func (m *Machine) Boot() {
 		Create: spec.Create{
 			Objects: []*spec.Object{
 				{
-					Database: "group",
-					Table:    "t_member",
+					Database: "machine",
+					Table:    "user",
 					Props: []*spec.Prop{
 						{
-							Name:  "userid",
-							Kind:  types.Int,
-							Value: 1,
+							Name:  "name",
+							Kind:  types.String,
+							Value: "hello",
 						},
 						{
-							Name:  "groupid",
-							Kind:  types.Int,
-							Value: 1,
+							Name:  "phone",
+							Kind:  types.String,
+							Value: "1313699",
 						},
 					},
 				},
 			},
 		},
 		Update: spec.Update{
-			Database: "group",
-			Table:    "t_member",
+			Database: "machine",
+			Table:    "user",
 			Queries: []*spec.Query{
 				{
 					Type:   types.Eq,
@@ -116,9 +118,9 @@ func (m *Machine) Boot() {
 			},
 			Props: []*spec.Prop{
 				{
-					Name:  "groupid",
-					Kind:  types.Int,
-					Value: 1200,
+					Name:  "phone",
+					Kind:  types.String,
+					Value: "1200",
 				},
 			},
 		},

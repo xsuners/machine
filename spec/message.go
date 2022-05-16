@@ -48,8 +48,23 @@ type Update struct {
 	Props    []*Prop
 }
 
+type Delete struct {
+	Database string
+	Table    string
+	Queries  []*Query
+}
+
+type Event struct {
+	Database string
+	Table    string
+	Id       int64
+	Props    []*Prop
+}
+
 type Message struct {
 	List   List
 	Create Create
 	Update Update
+	Delete Delete
+	Event  Event
 }

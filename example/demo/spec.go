@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/xsuners/machine/spec"
 	"github.com/xsuners/machine/spec/data"
+	"github.com/xsuners/machine/spec/types"
 )
 
 var s = &spec.Spec{
@@ -13,7 +14,7 @@ var s = &spec.Spec{
 			Driver:   "mysql",
 			Username: "root",
 			Password: "123456",
-			Name:     "group",
+			Name:     "machine",
 		},
 	},
 	Machine: spec.Machine{
@@ -60,6 +61,54 @@ var s = &spec.Spec{
 					Name:  "s1",
 					Props: make(map[string]any),
 					Children: []*spec.Node{
+						{
+							Type:  "update",
+							Name:  "u1",
+							Props: make(map[string]any),
+						},
+					},
+				},
+			},
+		},
+		Mq: []*spec.Mq{
+			{
+				Subject: "goods.created",
+				Root: &spec.Node{
+					Type:  "sequence",
+					Name:  "s1",
+					Props: make(map[string]any),
+					Children: []*spec.Node{
+						{
+							Type: "convert",
+							Name: "c1",
+							Props: map[string]any{
+								"update": &spec.Update{
+									Database: "machine",
+									Table:    "user",
+									Queries: []*spec.Query{
+										{
+											Type:   types.Eq,
+											Prop:   "id",
+											Kind:   types.Int,
+											Values: []any{100000},
+										},
+									},
+									Props: []*spec.Prop{
+										{
+											Name:  "username",
+											Kind:  types.String,
+											Value: "liule",
+										},
+									},
+								},
+								"statements": []any{
+									&spec.Asign{
+										From: "event.props.id",
+										To:   "update.queries.id",
+									},
+								},
+							},
+						},
 						{
 							Type:  "update",
 							Name:  "u1",

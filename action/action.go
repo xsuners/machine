@@ -10,14 +10,12 @@ import (
 
 type action struct {
 	name  string
-	props map[string]any
 	nodes map[string]node.Node
 }
 
 func New(c *spec.Node) node.Node {
 	return &action{
 		name:  c.Name,
-		props: c.Props,
 		nodes: make(map[string]node.Node),
 	}
 }

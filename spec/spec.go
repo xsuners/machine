@@ -8,13 +8,11 @@ import (
 type Mq struct {
 	Root    *Node
 	Subject string
-	// Message Message
 }
 
 type Rpc struct {
 	Root *Node
 	Path string
-	// Message Message
 }
 
 type Node struct {
