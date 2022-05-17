@@ -1,6 +1,8 @@
 package ui
 
-import "github.com/xsuners/machine/spec/types"
+import (
+	"github.com/xsuners/machine/spec/types"
+)
 
 type Query struct {
 	Types  []types.QT

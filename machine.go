@@ -6,6 +6,7 @@ import (
 	"github.com/xsuners/machine/action/convert"
 	"github.com/xsuners/machine/action/create"
 	"github.com/xsuners/machine/action/list"
+	"github.com/xsuners/machine/action/logging"
 	"github.com/xsuners/machine/action/record"
 	"github.com/xsuners/machine/action/update"
 	"github.com/xsuners/machine/composite/sequence"
@@ -38,11 +39,12 @@ func New(s *spec.Machine) *Machine {
 
 func init() {
 	// action
+	node.Register("list", list.New)
 	node.Register("record", record.New)
 	node.Register("create", create.New)
 	node.Register("update", update.New)
 	node.Register("convert", convert.New)
-	node.Register("list", list.New)
+	node.Register("logging", logging.New)
 
 	node.Register("sequence", sequence.New)
 }
@@ -50,7 +52,7 @@ func init() {
 func (m *Machine) Boot() {
 	fmt.Println("boot")
 	ctx := context.New()
-	ctx.In = spec.Message{
+	ctx.In = spec.In{
 		List: spec.List{
 			Database: "machine",
 			Table:    "user",

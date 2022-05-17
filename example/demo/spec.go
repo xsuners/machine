@@ -103,10 +103,19 @@ var s = &spec.Spec{
 								},
 								"statements": []any{
 									&spec.Asign{
-										From: "event.props.id",
-										To:   "update.queries.id",
+										From: "in.event.props.id",
+										To:   "in.update.queries.id",
 									},
 								},
+							},
+						},
+						{
+							Type: "logging",
+							Name: "l1",
+							Props: map[string]any{
+								"database": "in.update.database",
+								"queries":  "in.update.queries",
+								"id":       "in.update.queries.id",
 							},
 						},
 						{
