@@ -22,16 +22,17 @@ func New(s *spec.Node) node.Node {
 }
 
 func (n *update) Exec(ctx *context.Context) error {
-	log.Infosc(ctx, "create exec", zap.Any("update", ctx.In.Update))
+	log.Infosc(ctx, "update exec", zap.Any("update", ctx.In.Update))
 	u := ctx.In.Update
 	set, vals := util.Set(u.Props)
 	cons, vals := util.Where(u.Queries, vals...)
 	q := "update " + u.Table +
 		" set " + set +
 		" where " + cons
+	log.Infosc(ctx, "update exec", zap.String("sql", q))
 	_, _, err := database.Fetch(u.Database).Exec(ctx, q, vals...)
 	if err != nil {
-		log.Errorsc(ctx, "create exec", zap.Error(err))
+		log.Errorsc(ctx, "update exec", zap.Error(err))
 		return err
 	}
 	return nil

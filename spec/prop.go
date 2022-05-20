@@ -14,12 +14,13 @@ type Prop struct {
 	Value any
 }
 
-func (prop *Prop) Set(data any, paths ...string) error {
-	if len(paths) != 1 {
-		return fmt.Errorf("path %s invalid", strings.Join(paths, "."))
+func (prop *Prop) Set(path string, data any) error {
+	parts := strings.SplitN(path, ".", 2)
+	if len(parts) != 1 {
+		return fmt.Errorf("path %s invalid", strings.Join(parts, "."))
 	}
 	var ok bool
-	switch paths[0] {
+	switch parts[0] {
 	case "name":
 		prop.Name, ok = data.(string)
 		if !ok {
@@ -33,7 +34,7 @@ func (prop *Prop) Set(data any, paths ...string) error {
 	case "value":
 		prop.Value = data
 	default:
-		return errors.New("set prop: no feild " + paths[0])
+		return errors.New("set prop: no feild " + parts[0])
 	}
 	return nil
 }

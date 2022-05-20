@@ -90,22 +90,19 @@ var s = &spec.Spec{
 											Type:   types.Eq,
 											Prop:   "id",
 											Kind:   types.Int,
-											Values: []any{100000},
+											Values: []any{},
 										},
 									},
 									Props: []*spec.Prop{
 										{
 											Name:  "username",
 											Kind:  types.String,
-											Value: "liule",
+											Value: "mimi",
 										},
 									},
 								},
-								"statements": []any{
-									&spec.Asign{
-										From: "in.event.props.id",
-										To:   "in.update.queries.id",
-									},
+								"statements": []string{
+									"append in.update.queries.id.values in.event.props.id.value",
 								},
 							},
 						},

@@ -369,10 +369,17 @@ func (ctx *Context) getin(path string) (any, bool) {
 	return nil, false
 }
 
-func (ctx *Context) Set(path string, data any) error {
+func (ctx *Context) Set(path string, data any, op ...string) error {
 	parts := strings.Split(path, ".")
+	nparts := strings.SplitN(path, ".", 2)
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
+
+	switch parts[0] {
+	case "in":
+		return ctx.In.Set(nparts[1], data, op...)
+	}
+
 	if ctx.m == nil {
 		ctx.m = make(map[string]any)
 	}

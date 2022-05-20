@@ -1,6 +1,8 @@
 package convert
 
 import (
+	"strings"
+
 	"github.com/xsuners/machine/action"
 	"github.com/xsuners/machine/context"
 	"github.com/xsuners/machine/node"
@@ -24,7 +26,6 @@ func New(s *spec.Node) node.Node {
 func (n *convert) Exec(ctx *context.Context) error {
 	log.Infosc(ctx, "convert exec", zap.Any("props", n.props))
 	for _, data := range n.props {
-		// TODO 取值
 		switch m := data.(type) {
 		case *spec.Create:
 			ctx.In.Create = *m
@@ -32,6 +33,31 @@ func (n *convert) Exec(ctx *context.Context) error {
 			ctx.In.Update = *m
 		case *spec.Delete:
 			ctx.In.Delete = *m
+		}
+	}
+	if istats, ok := n.props["statements"]; ok {
+		if stats, ok := istats.([]string); ok {
+			for _, stat := range stats {
+				parts := strings.Split(stat, " ")
+				switch parts[0] {
+				case "asign":
+					data, ok := ctx.Get(parts[2])
+					if ok {
+						err := ctx.Set(parts[1], data)
+						if err != nil {
+							return err
+						}
+					}
+				case "append":
+					data, ok := ctx.Get(parts[2])
+					if ok {
+						err := ctx.Set(parts[1], data, parts[0])
+						if err != nil {
+							return err
+						}
+					}
+				}
+			}
 		}
 	}
 	return nil

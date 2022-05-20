@@ -13,12 +13,13 @@ type Select struct {
 	Kind types.PK
 }
 
-func (s *Select) Set(data any, paths ...string) error {
-	if len(paths) != 1 {
-		return fmt.Errorf("path %s invalid", strings.Join(paths, "."))
+func (s *Select) Set(path string, data any) error {
+	parts := strings.Split(path, ".")
+	if len(parts) != 1 {
+		return fmt.Errorf("path %s invalid", strings.Join(parts, "."))
 	}
 	var ok bool
-	switch paths[0] {
+	switch parts[0] {
 	case "prop":
 		s.Prop, ok = data.(string)
 		if !ok {
@@ -30,7 +31,7 @@ func (s *Select) Set(data any, paths ...string) error {
 			return errors.New("set select: data not pk")
 		}
 	default:
-		return errors.New("set select: no feild " + paths[0])
+		return errors.New("set select: no feild " + parts[0])
 	}
 	return nil
 }

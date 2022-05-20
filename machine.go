@@ -126,6 +126,14 @@ func (m *Machine) Boot() {
 				},
 			},
 		},
+		Event: spec.Event{
+			Props: []*spec.Prop{
+				{
+					Name:  "id",
+					Value: 100000,
+				},
+			},
+		},
 	}
 	// for i := 0; i < 2; i++ {
 	for _, m := range m.mqs {
