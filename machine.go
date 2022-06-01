@@ -45,7 +45,7 @@ func init() {
 	node.Register("update", update.New)
 	node.Register("convert", convert.New)
 	node.Register("logging", logging.New)
-
+	// composite
 	node.Register("sequence", sequence.New)
 }
 
@@ -139,9 +139,9 @@ func (m *Machine) Boot() {
 	for _, m := range m.mqs {
 		m.Handle(ctx)
 	}
-	for _, r := range m.rpcs {
-		r.Handle(ctx)
-	}
+	// for _, r := range m.rpcs {
+	// 	r.Handle(ctx)
+	// }
 	// 	time.Sleep(time.Second * 5)
 	// }
 }

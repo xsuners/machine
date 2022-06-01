@@ -13,6 +13,33 @@ type Update struct {
 	Props    []*Prop
 }
 
+func (u *Update) Get(path string) (any, bool) {
+	ss := strings.SplitN(path, ".", 2)
+	switch len(ss) {
+	case 1:
+		switch ss[0] {
+		case "":
+			return u, true
+		case "database":
+			return u.Database, true
+		case "table":
+			return u.Table, true
+		case "queries":
+			return u.Queries, true
+		case "props":
+			return u.Props, true
+		}
+	case 2:
+		switch ss[0] {
+		case "queries":
+			return Queries(u.Queries).Get(ss[1])
+		case "props":
+			return Props(u.Props).Get(ss[1])
+		}
+	}
+	return nil, false
+}
+
 func (u *Update) Set(path string, data any, op ...string) error {
 	parts := strings.SplitN(path, ".", 3)
 	if len(parts) < 1 {
@@ -45,7 +72,6 @@ func (u *Update) Set(path string, data any, op ...string) error {
 			return nil
 		}
 		for _, q := range u.Queries {
-			fmt.Println(">>>>>>>>>", q, parts[1])
 			if q.Prop == parts[1] {
 				return q.Set(parts[2], data, op...)
 			}

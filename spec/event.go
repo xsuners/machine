@@ -13,6 +13,30 @@ type Event struct {
 	Props    []*Prop
 }
 
+func (e *Event) Get(path string) (any, bool) {
+	ss := strings.SplitN(path, ".", 2)
+	switch len(ss) {
+	case 1:
+		switch ss[0] {
+		case "":
+			return e, true
+		case "database":
+			return e.Database, true
+		case "table":
+			return e.Table, true
+		case "id":
+			return e.Id, true
+		case "props":
+			return e.Props, true
+		}
+	case 2:
+		if ss[0] == "props" {
+			return Props(e.Props).Get(ss[1])
+		}
+	}
+	return nil, false
+}
+
 func (e *Event) Set(path string, data any) error {
 	parts := strings.SplitN(path, ".", 3)
 	if len(parts) < 1 {

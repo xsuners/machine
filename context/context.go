@@ -14,12 +14,12 @@ import (
 
 type Context struct {
 	context.Context
+	mu sync.RWMutex
 
 	request *http.Request
 	message *nats.Msg
-	mu      sync.RWMutex
-	m       map[string]any
 
+	m  memory
 	In spec.In
 }
 
@@ -65,344 +65,42 @@ func (ctx *Context) Get(path string) (any, bool) {
 	ctx.mu.RLock()
 	defer ctx.mu.RUnlock()
 
-	parts := strings.Split(path, ".")
-
-	if len(parts) < 1 {
-		return nil, false
-	}
-	switch parts[0] {
-	case "header":
-		if len(parts) == 2 {
-			return ctx.request.Header.Get(parts[1]), true
-		} else {
-			return nil, false
+	ss := strings.SplitN(path, ".", 2)
+	switch len(ss) {
+	case 1:
+		switch ss[0] {
+		case "header":
+			return ctx.request.Header, true
+		case "query":
+			return ctx.request.URL.Query(), true
+		case "in":
+			return ctx.In, true
 		}
-	case "query":
-		if len(parts) == 2 {
-			return ctx.request.URL.Query().Get(parts[1]), true
-		} else {
-			return nil, false
-		}
-	case "in":
-		return ctx.getin(path)
-	}
-
-	t := &ctx.m
-	for i, part := range parts {
-		if i == len(parts)-1 {
-			data, ok := (*t)[part]
-			return data, ok
-		}
-		d, ok := (*t)[part].(map[string]any)
-		if !ok {
-			fmt.Println("zhe", path)
-			return nil, false
-		}
-		t = &d
-	}
-	return nil, false
-}
-
-func (ctx *Context) getin(path string) (any, bool) {
-	parts := strings.Split(path, ".")
-
-	if len(parts) == 1 {
-		return ctx.In, true
-	}
-
-	switch parts[1] {
-	case "create":
-		if len(parts) == 2 {
-			return ctx.In.Create, true
-		}
-		// TODO
-	case "update":
-		if len(parts) == 2 {
-			return ctx.In.Update, true
-		}
-		switch parts[2] {
-		case "database":
-			if len(parts) == 3 {
-				return ctx.In.Update.Database, true
-			} else {
-				return nil, false
-			}
-		case "table":
-			if len(parts) == 3 {
-				return ctx.In.Update.Table, true
-			} else {
-				return nil, false
-			}
-		case "queries":
-			if len(parts) == 3 {
-				return ctx.In.Update.Queries, true
-			}
-			for _, query := range ctx.In.Update.Queries {
-				if query.Prop == parts[3] {
-					if len(parts) == 4 {
-						return query, true
-					}
-					switch parts[4] {
-					case "type":
-						if len(parts) == 5 {
-							return query.Type, true
-						}
-						return nil, false
-					case "prop":
-						if len(parts) == 5 {
-							return query.Prop, true
-						}
-						return nil, false
-					case "kind":
-						if len(parts) == 5 {
-							return query.Kind, true
-						}
-						return nil, false
-					case "values":
-						if len(parts) == 5 {
-							return query.Values, true
-						}
-						return nil, false
-					}
-					return nil, false
-				}
-			}
-			return nil, false
-		case "props":
-			if len(parts) == 3 {
-				return ctx.In.Update.Props, true
-			}
-			for _, prop := range ctx.In.Update.Props {
-				if prop.Name == parts[3] {
-					if len(parts) == 4 {
-						return prop, true
-					}
-					switch parts[4] {
-					case "name":
-						if len(parts) == 5 {
-							return prop.Name, true
-						} else {
-							return nil, false
-						}
-					case "kind":
-						if len(parts) == 5 {
-							return prop.Kind, true
-						} else {
-							return nil, false
-						}
-					case "value":
-						if len(parts) == 5 {
-							return prop.Value, true
-						} else {
-							return nil, false
-						}
-					}
-					return nil, false
-				}
-			}
-			return nil, false
-		}
-	case "delete":
-		if len(parts) == 2 {
-			return ctx.In.Delete, true
-		}
-		switch parts[2] {
-		case "database":
-			if len(parts) == 3 {
-				return ctx.In.Delete.Database, true
-			} else {
-				return nil, false
-			}
-		case "table":
-			if len(parts) == 3 {
-				return ctx.In.Delete.Table, true
-			} else {
-				return nil, false
-			}
-		case "queries":
-			if len(parts) == 3 {
-				return ctx.In.Delete.Queries, true
-			}
-			for _, query := range ctx.In.Delete.Queries {
-				if query.Prop == parts[3] {
-					if len(parts) == 4 {
-						return query, true
-					}
-					switch parts[4] {
-					case "type":
-						if len(parts) == 5 {
-							return query.Type, true
-						}
-						return nil, false
-					case "prop":
-						if len(parts) == 5 {
-							return query.Prop, true
-						}
-						return nil, false
-					case "kind":
-						if len(parts) == 5 {
-							return query.Kind, true
-						}
-						return nil, false
-					case "values":
-						if len(parts) == 5 {
-							return query.Values, true
-						}
-						return nil, false
-					}
-					return nil, false
-				}
-			}
-			return nil, false
-		}
-	case "list":
-		if len(parts) == 2 {
-			return ctx.In.List, true
-		}
-		switch parts[2] {
-		case "database":
-			if len(parts) == 3 {
-				return ctx.In.List.Database, true
-			} else {
-				return nil, false
-			}
-		case "table":
-			if len(parts) == 3 {
-				return ctx.In.List.Table, true
-			} else {
-				return nil, false
-			}
-		case "queries":
-			if len(parts) == 3 {
-				return ctx.In.List.Queries, true
-			}
-			for _, query := range ctx.In.List.Queries {
-				if query.Prop == parts[3] {
-					if len(parts) == 4 {
-						return query, true
-					}
-					switch parts[4] {
-					case "type":
-						if len(parts) == 5 {
-							return query.Type, true
-						}
-						return nil, false
-					case "prop":
-						if len(parts) == 5 {
-							return query.Prop, true
-						}
-						return nil, false
-					case "kind":
-						if len(parts) == 5 {
-							return query.Kind, true
-						}
-						return nil, false
-					case "values":
-						if len(parts) == 5 {
-							return query.Values, true
-						}
-						return nil, false
-					}
-					return nil, false
-				}
-			}
-			return nil, false
-		}
-	case "event":
-		if len(parts) == 2 {
-			return ctx.In.Event, true
-		}
-		switch parts[2] {
-		case "database":
-			if len(parts) == 3 {
-				return ctx.In.Event.Database, true
-			} else {
-				return nil, false
-			}
-		case "table":
-			if len(parts) == 3 {
-				return ctx.In.Event.Table, true
-			} else {
-				return nil, false
-			}
-		case "id":
-			if len(parts) == 3 {
-				return ctx.In.Event.Id, true
-			} else {
-				return nil, false
-			}
-		case "props":
-			if len(parts) == 3 {
-				return ctx.In.Event.Props, true
-			}
-			for _, prop := range ctx.In.Event.Props {
-				if prop.Name == parts[3] {
-					if len(parts) == 4 {
-						return prop, true
-					}
-					switch parts[4] {
-					case "name":
-						if len(parts) == 5 {
-							return prop.Name, true
-						} else {
-							return nil, false
-						}
-					case "kind":
-						if len(parts) == 5 {
-							return prop.Kind, true
-						} else {
-							return nil, false
-						}
-					case "value":
-						if len(parts) == 5 {
-							return prop.Value, true
-						} else {
-							return nil, false
-						}
-					}
-					return nil, false
-				}
-			}
-			return nil, false
+	case 2:
+		switch ss[0] {
+		case "header":
+			return ctx.request.Header.Get(ss[1]), true
+		case "query":
+			return ctx.request.URL.Query().Get(ss[1]), true
+		case "in":
+			return ctx.In.Get(ss[1])
 		}
 	}
-	return nil, false
+
+	return ctx.m.Get(path)
 }
 
 func (ctx *Context) Set(path string, data any, op ...string) error {
-	parts := strings.Split(path, ".")
-	nparts := strings.SplitN(path, ".", 2)
 	ctx.mu.Lock()
 	defer ctx.mu.Unlock()
 
-	switch parts[0] {
+	ps := strings.SplitN(path, ".", 2)
+	switch ps[0] {
 	case "in":
-		return ctx.In.Set(nparts[1], data, op...)
+		return ctx.In.Set(ps[1], data, op...)
 	}
 
-	if ctx.m == nil {
-		ctx.m = make(map[string]any)
-	}
-	t := &ctx.m
-	for i, part := range parts {
-		if i == len(parts)-1 {
-			(*t)[part] = data
-			return nil
-		}
-		if _, ok := (*t)[part]; !ok {
-			o := make(map[string]any)
-			(*t)[part] = o
-			t = &o
-			continue
-		} else {
-			d, ok := (*t)[part].(map[string]any)
-			if !ok {
-				return fmt.Errorf("path %s has not map value", path)
-			}
-			t = &d
-		}
-	}
-	return nil
+	return ctx.m.Set(path, data, op...)
 }
 
 func (ctx *Context) Bytes(path string) ([]byte, error) {

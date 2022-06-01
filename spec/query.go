@@ -15,6 +15,22 @@ type Query struct {
 	Values []any
 }
 
+func (p *Query) Get(path string) (any, bool) {
+	switch path {
+	case "":
+		return p, true
+	case "type":
+		return p.Type, true
+	case "kind":
+		return p.Kind, true
+	case "prop":
+		return p.Prop, true
+	case "values":
+		return p.Values, true
+	}
+	return nil, false
+}
+
 func (s *Query) Set(path string, data any, op ...string) error {
 	parts := strings.Split(path, ".")
 	if len(parts) != 1 {
@@ -54,4 +70,28 @@ func (s *Query) Set(path string, data any, op ...string) error {
 		return errors.New("set query: no feild " + parts[0])
 	}
 	return nil
+}
+
+type Queries []*Query
+
+func (ps Queries) Get(path string) (any, bool) {
+	ss := strings.SplitN(path, ".", 2)
+	switch len(ss) {
+	case 1:
+		if ss[0] == "" {
+			return ps, true
+		}
+		for _, p := range ps {
+			if ss[0] == p.Prop {
+				return p, true
+			}
+		}
+	case 2:
+		for _, p := range ps {
+			if ss[0] == p.Prop {
+				return p.Get(ss[1])
+			}
+		}
+	}
+	return nil, false
 }

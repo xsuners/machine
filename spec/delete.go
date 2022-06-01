@@ -12,6 +12,28 @@ type Delete struct {
 	Queries  []*Query
 }
 
+func (c *Delete) Get(path string) (any, bool) {
+	ss := strings.SplitN(path, ".", 2)
+	switch len(ss) {
+	case 1:
+		switch ss[0] {
+		case "":
+			return c, true
+		case "database":
+			return c.Database, true
+		case "table":
+			return c.Table, true
+		case "queries":
+			return c.Queries, true
+		}
+	case 2:
+		if ss[0] == "queries" {
+			return Queries(c.Queries).Get(ss[1])
+		}
+	}
+	return nil, false
+}
+
 func (u *Delete) Set(path string, data any) error {
 	parts := strings.SplitN(path, ".", 3)
 	if len(parts) < 1 {

@@ -15,6 +15,37 @@ type List struct {
 	Size     int
 }
 
+func (l *List) Get(path string) (any, bool) {
+	ss := strings.SplitN(path, ".", 2)
+	switch len(ss) {
+	case 1:
+		switch ss[0] {
+		case "":
+			return l, true
+		case "database":
+			return l.Database, true
+		case "table":
+			return l.Table, true
+		case "page":
+			return l.Page, true
+		case "size":
+			return l.Size, true
+		case "queries":
+			return l.Queries, true
+		case "selects":
+			return l.Selects, true
+		}
+	case 2:
+		switch ss[0] {
+		case "queries":
+			return Queries(l.Queries).Get(ss[1])
+		case "selects":
+			return Selects(l.Selects).Get(ss[1])
+		}
+	}
+	return nil, false
+}
+
 func (list *List) Set(path string, data any) error {
 	parts := strings.SplitN(path, ".", 3)
 	if len(parts) < 1 {

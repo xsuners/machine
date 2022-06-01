@@ -10,6 +10,24 @@ type Create struct {
 	Objects []*Object
 }
 
+func (c *Create) Get(path string) (any, bool) {
+	ss := strings.SplitN(path, ".", 2)
+	switch len(ss) {
+	case 1:
+		switch ss[0] {
+		case "":
+			return c, true
+		case "objects":
+			return c.Objects, true
+		}
+	case 2:
+		if ss[0] == "objects" {
+			return Objects(c.Objects).Get(ss[1])
+		}
+	}
+	return nil, false
+}
+
 func (u *Create) Set(path string, data any) error {
 	parts := strings.SplitN(path, ".", 3)
 	if len(parts) < 1 {

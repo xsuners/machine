@@ -97,7 +97,7 @@ var s = &spec.Spec{
 										{
 											Name:  "username",
 											Kind:  types.String,
-											Value: "mimi",
+											Value: "属性",
 										},
 									},
 								},
