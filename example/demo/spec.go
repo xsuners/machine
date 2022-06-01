@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/xsuners/machine/spec"
 	"github.com/xsuners/machine/spec/data"
+	"github.com/xsuners/machine/spec/in"
 	"github.com/xsuners/machine/spec/types"
 )
 
@@ -82,10 +83,10 @@ var s = &spec.Spec{
 							Type: "convert",
 							Name: "c1",
 							Props: map[string]any{
-								"update": &spec.Update{
+								"update": &in.Update{
 									Database: "machine",
 									Table:    "user",
-									Queries: []*spec.Query{
+									Queries: []*in.Query{
 										{
 											Type:   types.Eq,
 											Prop:   "id",
@@ -93,7 +94,7 @@ var s = &spec.Spec{
 											Values: []any{},
 										},
 									},
-									Props: []*spec.Prop{
+									Props: []*in.Prop{
 										{
 											Name:  "username",
 											Kind:  types.String,

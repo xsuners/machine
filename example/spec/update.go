@@ -5,15 +5,15 @@ import (
 	"fmt"
 
 	"github.com/xsuners/machine/context"
-	"github.com/xsuners/machine/spec"
+	"github.com/xsuners/machine/spec/in"
 	"github.com/xsuners/machine/spec/types"
 )
 
 func getupdate() {
-	d := spec.Update{
+	d := in.Update{
 		Database: "machine",
 		Table:    "user",
-		Queries: []*spec.Query{
+		Queries: []*in.Query{
 			{
 				Type:   types.Eq,
 				Kind:   types.Int,
@@ -21,7 +21,7 @@ func getupdate() {
 				Values: []any{1},
 			},
 		},
-		Props: []*spec.Prop{
+		Props: []*in.Prop{
 			{
 				Name:  "id",
 				Value: 1,
@@ -47,9 +47,9 @@ func getupdate() {
 
 func setupdate() {
 	ctx := context.New()
-	ctx.In = spec.In{
-		Update: spec.Update{
-			Queries: []*spec.Query{
+	ctx.In = in.In{
+		Update: in.Update{
+			Queries: []*in.Query{
 				{
 					Prop: "id",
 				},

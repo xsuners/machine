@@ -3,16 +3,16 @@ package main
 import (
 	"fmt"
 
-	"github.com/xsuners/machine/spec"
+	"github.com/xsuners/machine/spec/in"
 	"github.com/xsuners/machine/spec/types"
 )
 
 func getevent() {
-	event := &spec.Event{
+	event := &in.Event{
 		Database: "dd",
 		Table:    "tt",
 		Id:       1,
-		Props: []*spec.Prop{
+		Props: []*in.Prop{
 			{
 				Name:  "name",
 				Value: "hello",

@@ -3,15 +3,15 @@ package main
 import (
 	"fmt"
 
-	"github.com/xsuners/machine/spec"
+	"github.com/xsuners/machine/spec/in"
 	"github.com/xsuners/machine/spec/types"
 )
 
 func getdelete() {
-	d := spec.Delete{
+	d := in.Delete{
 		Database: "machine",
 		Table:    "user",
-		Queries: []*spec.Query{
+		Queries: []*in.Query{
 			{
 				Type:   types.Eq,
 				Kind:   types.Int,

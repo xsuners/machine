@@ -3,18 +3,18 @@ package main
 import (
 	"fmt"
 
-	"github.com/xsuners/machine/spec"
+	"github.com/xsuners/machine/spec/in"
 	"github.com/xsuners/machine/spec/types"
 )
 
 func getcreate() {
-	c := &spec.Create{
-		Objects: []*spec.Object{
+	c := &in.Create{
+		Objects: []*in.Object{
 			{
 				Database: "machine",
 				Table:    "user",
 				Id:       100000,
-				Props: []*spec.Prop{
+				Props: []*in.Prop{
 					{
 						Name:  "name",
 						Value: "hello",

@@ -9,7 +9,7 @@ import (
 	"sync"
 
 	"github.com/nats-io/nats.go"
-	"github.com/xsuners/machine/spec"
+	"github.com/xsuners/machine/spec/in"
 )
 
 type Context struct {
@@ -20,7 +20,7 @@ type Context struct {
 	message *nats.Msg
 
 	m  memory
-	In spec.In
+	In in.In
 }
 
 func New(ins ...any) *Context {

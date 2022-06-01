@@ -7,6 +7,7 @@ import (
 	"github.com/xsuners/machine/context"
 	"github.com/xsuners/machine/node"
 	"github.com/xsuners/machine/spec"
+	"github.com/xsuners/machine/spec/in"
 	"github.com/xsuners/mo/log"
 	"go.uber.org/zap"
 )
@@ -27,11 +28,11 @@ func (n *convert) Exec(ctx *context.Context) error {
 	log.Infosc(ctx, "convert exec", zap.Any("props", n.props))
 	for _, data := range n.props {
 		switch m := data.(type) {
-		case *spec.Create:
+		case *in.Create:
 			ctx.In.Create = *m
-		case *spec.Update:
+		case *in.Update:
 			ctx.In.Update = *m
-		case *spec.Delete:
+		case *in.Delete:
 			ctx.In.Delete = *m
 		}
 	}

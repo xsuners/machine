@@ -1,4 +1,4 @@
-package spec
+package in
 
 import (
 	"errors"
@@ -6,41 +6,38 @@ import (
 	"strings"
 )
 
-type Update struct {
+type Event struct {
 	Database string
 	Table    string
-	Queries  []*Query
+	Id       int64
 	Props    []*Prop
 }
 
-func (u *Update) Get(path string) (any, bool) {
+func (e *Event) Get(path string) (any, bool) {
 	ss := strings.SplitN(path, ".", 2)
 	switch len(ss) {
 	case 1:
 		switch ss[0] {
 		case "":
-			return u, true
+			return e, true
 		case "database":
-			return u.Database, true
+			return e.Database, true
 		case "table":
-			return u.Table, true
-		case "queries":
-			return u.Queries, true
+			return e.Table, true
+		case "id":
+			return e.Id, true
 		case "props":
-			return u.Props, true
+			return e.Props, true
 		}
 	case 2:
-		switch ss[0] {
-		case "queries":
-			return Queries(u.Queries).Get(ss[1])
-		case "props":
-			return Props(u.Props).Get(ss[1])
+		if ss[0] == "props" {
+			return Props(e.Props).Get(ss[1])
 		}
 	}
 	return nil, false
 }
 
-func (u *Update) Set(path string, data any, op ...string) error {
+func (e *Event) Set(path string, data any) error {
 	parts := strings.SplitN(path, ".", 3)
 	if len(parts) < 1 {
 		return errors.New("invalid paths")
@@ -51,7 +48,7 @@ func (u *Update) Set(path string, data any, op ...string) error {
 		if len(parts) > 1 {
 			return errors.New("path too long")
 		}
-		u.Database, ok = data.(string)
+		e.Database, ok = data.(string)
 		if !ok {
 			return errors.New("data type not string")
 		}
@@ -59,33 +56,27 @@ func (u *Update) Set(path string, data any, op ...string) error {
 		if len(parts) > 1 {
 			return errors.New("path too long")
 		}
-		u.Table, ok = data.(string)
+		e.Table, ok = data.(string)
 		if !ok {
 			return errors.New("data type not string")
 		}
-	case "queries":
-		if len(parts) == 1 {
-			u.Queries, ok = data.([]*Query)
-			if !ok {
-				return errors.New("data type not int")
-			}
-			return nil
+	case "id":
+		if len(parts) > 1 {
+			return errors.New("path too long")
 		}
-		for _, q := range u.Queries {
-			if q.Prop == parts[1] {
-				return q.Set(parts[2], data, op...)
-			}
+		e.Id, ok = data.(int64)
+		if !ok {
+			return errors.New("data type not string")
 		}
-		return fmt.Errorf("set u: prop %s not found", path)
 	case "props":
 		if len(parts) == 1 {
-			u.Props, ok = data.([]*Prop)
+			e.Props, ok = data.([]*Prop)
 			if !ok {
 				return errors.New("data type not int")
 			}
 			return nil
 		}
-		for _, q := range u.Props {
+		for _, q := range e.Props {
 			if q.Name == parts[1] {
 				return q.Set(parts[2], data)
 			}

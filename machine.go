@@ -15,6 +15,7 @@ import (
 	"github.com/xsuners/machine/server/mq"
 	"github.com/xsuners/machine/server/rpc"
 	"github.com/xsuners/machine/spec"
+	"github.com/xsuners/machine/spec/in"
 	"github.com/xsuners/machine/spec/types"
 )
 
@@ -52,11 +53,11 @@ func init() {
 func (m *Machine) Boot() {
 	fmt.Println("boot")
 	ctx := context.New()
-	ctx.In = spec.In{
-		List: spec.List{
+	ctx.In = in.In{
+		List: in.List{
 			Database: "machine",
 			Table:    "user",
-			Selects: []*spec.Select{
+			Selects: []*in.Select{
 				{
 					Prop: "id",
 					Kind: types.Int,
@@ -70,7 +71,7 @@ func (m *Machine) Boot() {
 					Kind: types.String,
 				},
 			},
-			Queries: []*spec.Query{
+			Queries: []*in.Query{
 				{
 					Type:   types.Gt,
 					Prop:   "name",
@@ -87,12 +88,12 @@ func (m *Machine) Boot() {
 			Page: 0,
 			Size: 10,
 		},
-		Create: spec.Create{
-			Objects: []*spec.Object{
+		Create: in.Create{
+			Objects: []*in.Object{
 				{
 					Database: "machine",
 					Table:    "user",
-					Props: []*spec.Prop{
+					Props: []*in.Prop{
 						{
 							Name:  "name",
 							Kind:  types.String,
@@ -107,10 +108,10 @@ func (m *Machine) Boot() {
 				},
 			},
 		},
-		Update: spec.Update{
+		Update: in.Update{
 			Database: "machine",
 			Table:    "user",
-			Queries: []*spec.Query{
+			Queries: []*in.Query{
 				{
 					Type:   types.Eq,
 					Prop:   "id",
@@ -118,7 +119,7 @@ func (m *Machine) Boot() {
 					Values: []any{1},
 				},
 			},
-			Props: []*spec.Prop{
+			Props: []*in.Prop{
 				{
 					Name:  "phone",
 					Kind:  types.String,
@@ -126,8 +127,8 @@ func (m *Machine) Boot() {
 				},
 			},
 		},
-		Event: spec.Event{
-			Props: []*spec.Prop{
+		Event: in.Event{
+			Props: []*in.Prop{
 				{
 					Name:  "id",
 					Value: 100000,

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/xsuners/machine/spec"
+	"github.com/xsuners/machine/spec/in"
 	"github.com/xsuners/machine/spec/types"
 )
 
-func Scan(ss ...*spec.Select) (data map[string]any, vals []any) {
+func Scan(ss ...*in.Select) (data map[string]any, vals []any) {
 	data = make(map[string]any)
 	var holders []any
 	for _, s := range ss {
@@ -33,7 +33,7 @@ func Scan(ss ...*spec.Select) (data map[string]any, vals []any) {
 	return data, holders
 }
 
-func Where(l []*spec.Query, vals ...any) (string, []any) {
+func Where(l []*in.Query, vals ...any) (string, []any) {
 	// var vals []any
 	var cons []string
 	for _, query := range l {
@@ -75,7 +75,7 @@ func Where(l []*spec.Query, vals ...any) (string, []any) {
 	return strings.Join(cons, " and "), vals
 }
 
-func Set(props []*spec.Prop, vals ...any) (string, []any) {
+func Set(props []*in.Prop, vals ...any) (string, []any) {
 	var keys []string
 	for _, prop := range props {
 		keys = append(keys, prop.Name+" = ?")

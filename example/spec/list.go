@@ -4,23 +4,23 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/xsuners/machine/spec"
+	"github.com/xsuners/machine/spec/in"
 	"github.com/xsuners/machine/spec/types"
 )
 
 func getlist() {
-	d := spec.List{
+	d := in.List{
 		Database: "machine",
 		Table:    "user",
 		Page:     1,
 		Size:     12,
-		Selects: []*spec.Select{
+		Selects: []*in.Select{
 			{
 				Prop: "id",
 				Kind: types.Int,
 			},
 		},
-		Queries: []*spec.Query{
+		Queries: []*in.Query{
 			{
 				Type:   types.Eq,
 				Kind:   types.Int,
@@ -45,20 +45,12 @@ func getlist() {
 }
 
 func setlist() {
-	var in spec.In
+	var in in.In
 	err := in.Set("list.database", "machine")
 	if err != nil {
 		panic(err)
 	}
 	err = in.Set("list.table", "user")
-	if err != nil {
-		panic(err)
-	}
-	err = in.Set("list.selects", []*spec.Select{
-		{
-			Prop: "name",
-		},
-	})
 	if err != nil {
 		panic(err)
 	}
