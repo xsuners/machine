@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
+	"github.com/xsuners/machine/spec"
 	"github.com/xsuners/machine/spec/in"
-	"github.com/xsuners/machine/spec/types"
 )
 
 func getcreate() {
@@ -18,12 +18,12 @@ func getcreate() {
 					{
 						Name:  "name",
 						Value: "hello",
-						Kind:  types.String,
+						Kind:  spec.String,
 					},
 					{
 						Name:  "id",
 						Value: 1,
-						Kind:  types.Int,
+						Kind:  spec.Int,
 					},
 				},
 			},

@@ -5,33 +5,33 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/xsuners/machine/spec/types"
+	"github.com/xsuners/machine/spec"
 )
 
 type Query struct {
-	Type   types.QT
+	Type   spec.QT
 	Prop   string
-	Kind   types.PK
+	Kind   spec.PK
 	Values []any
 }
 
-func (p *Query) Get(path string) (any, bool) {
+func (q *Query) Get(path string) (any, bool) {
 	switch path {
 	case "":
-		return p, true
+		return q, true
 	case "type":
-		return p.Type, true
+		return q.Type, true
 	case "kind":
-		return p.Kind, true
+		return q.Kind, true
 	case "prop":
-		return p.Prop, true
+		return q.Prop, true
 	case "values":
-		return p.Values, true
+		return q.Values, true
 	}
 	return nil, false
 }
 
-func (s *Query) Set(path string, data any, op ...string) error {
+func (q *Query) Set(path string, data any, op ...string) error {
 	parts := strings.Split(path, ".")
 	if len(parts) != 1 {
 		return fmt.Errorf("path %s invalid", strings.Join(parts, "."))
@@ -39,30 +39,30 @@ func (s *Query) Set(path string, data any, op ...string) error {
 	var ok bool
 	switch parts[0] {
 	case "type":
-		s.Type, ok = data.(types.QT)
+		q.Type, ok = data.(spec.QT)
 		if !ok {
 			return errors.New("set query: data not qt")
 		}
 	case "prop":
-		s.Prop, ok = data.(string)
+		q.Prop, ok = data.(string)
 		if !ok {
 			return errors.New("set query: data not string")
 		}
 	case "kind":
-		s.Kind, ok = data.(types.PK)
+		q.Kind, ok = data.(spec.PK)
 		if !ok {
 			return errors.New("set query: data not pk")
 		}
 	case "values":
 		if len(op) > 0 {
 			if op[0] == "append" {
-				s.Values = append(s.Values, data)
+				q.Values = append(q.Values, data)
 				return nil
 			} else {
 				return errors.New("set query: path too long")
 			}
 		}
-		s.Values, ok = data.([]any)
+		q.Values, ok = data.([]any)
 		if !ok {
 			return errors.New("set query: data not []any")
 		}

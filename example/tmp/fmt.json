@@ -1,0 +1,129 @@
+{
+    "Pages": null,
+    "Databases": [
+        {
+            "Host": "127.0.0.1",
+            "Port": 3306,
+            "Driver": "mysql",
+            "Username": "root",
+            "Password": "123456",
+            "Name": "machine",
+            "Tables": null
+        }
+    ],
+    "Machine": {
+        "Rpcs": [
+            {
+                "Root": {
+                    "Type": "sequence",
+                    "Name": "s1",
+                    "Props": {},
+                    "Children": [
+                        {
+                            "Type": "create",
+                            "Name": "c1",
+                            "Props": {},
+                            "Children": null
+                        },
+                        {
+                            "Type": "record",
+                            "Name": "r2",
+                            "Props": {},
+                            "Children": null
+                        }
+                    ]
+                },
+                "Path": "test"
+            },
+            {
+                "Root": {
+                    "Type": "sequence",
+                    "Name": "s1",
+                    "Props": {},
+                    "Children": [
+                        {
+                            "Type": "list",
+                            "Name": "l1",
+                            "Props": {},
+                            "Children": null
+                        }
+                    ]
+                },
+                "Path": "list"
+            },
+            {
+                "Root": {
+                    "Type": "sequence",
+                    "Name": "s1",
+                    "Props": {},
+                    "Children": [
+                        {
+                            "Type": "update",
+                            "Name": "u1",
+                            "Props": {},
+                            "Children": null
+                        }
+                    ]
+                },
+                "Path": "update"
+            }
+        ],
+        "Mq": [
+            {
+                "Root": {
+                    "Type": "sequence",
+                    "Name": "s1",
+                    "Props": {},
+                    "Children": [
+                        {
+                            "Type": "convert",
+                            "Name": "c1",
+                            "Props": {
+                                "statements": [
+                                    "append in.update.queries.id.values in.event.props.id.value"
+                                ],
+                                "update": {
+                                    "Database": "machine",
+                                    "Table": "user",
+                                    "Queries": [
+                                        {
+                                            "Type": "eq",
+                                            "Prop": "id",
+                                            "Kind": "int",
+                                            "Values": []
+                                        }
+                                    ],
+                                    "Props": [
+                                        {
+                                            "Name": "username",
+                                            "Kind": "string",
+                                            "Value": "属性"
+                                        }
+                                    ]
+                                }
+                            },
+                            "Children": null
+                        },
+                        {
+                            "Type": "logging",
+                            "Name": "l1",
+                            "Props": {
+                                "database": "in.update.database",
+                                "id": "in.update.queries.id",
+                                "queries": "in.update.queries"
+                            },
+                            "Children": null
+                        },
+                        {
+                            "Type": "update",
+                            "Name": "u1",
+                            "Props": {},
+                            "Children": null
+                        }
+                    ]
+                },
+                "Subject": "goods.created"
+            }
+        ]
+    }
+}

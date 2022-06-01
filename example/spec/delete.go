@@ -3,8 +3,8 @@ package main
 import (
 	"fmt"
 
+	"github.com/xsuners/machine/spec"
 	"github.com/xsuners/machine/spec/in"
-	"github.com/xsuners/machine/spec/types"
 )
 
 func getdelete() {
@@ -13,8 +13,8 @@ func getdelete() {
 		Table:    "user",
 		Queries: []*in.Query{
 			{
-				Type:   types.Eq,
-				Kind:   types.Int,
+				Type:   spec.Eq,
+				Kind:   spec.Int,
 				Prop:   "id",
 				Values: []any{1},
 			},

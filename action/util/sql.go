@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/xsuners/machine/spec"
 	"github.com/xsuners/machine/spec/in"
-	"github.com/xsuners/machine/spec/types"
 )
 
 func Scan(ss ...*in.Select) (data map[string]any, vals []any) {
@@ -14,15 +14,15 @@ func Scan(ss ...*in.Select) (data map[string]any, vals []any) {
 	for _, s := range ss {
 		var h any
 		switch s.Kind {
-		case types.Int:
+		case spec.Int:
 			h = int(0)
-		case types.Bool:
+		case spec.Bool:
 			h = false
-		case types.Float:
+		case spec.Float:
 			h = float64(0.0)
-		case types.String:
+		case spec.String:
 			h = ""
-		case types.Enum:
+		case spec.Enum:
 			h = ""
 		default:
 			h = ""
@@ -41,29 +41,29 @@ func Where(l []*in.Query, vals ...any) (string, []any) {
 			continue
 		}
 		switch query.Type {
-		case types.Eq:
+		case spec.Eq:
 			cons = append(cons, query.Prop+" = ?")
 			vals = append(vals, query.Values[0])
-		case types.Gt:
+		case spec.Gt:
 			cons = append(cons, query.Prop+" > ?")
 			vals = append(vals, query.Values[0])
-		case types.Ge:
+		case spec.Ge:
 			cons = append(cons, query.Prop+" >= ?")
 			vals = append(vals, query.Values[0])
-		case types.Lt:
+		case spec.Lt:
 			cons = append(cons, query.Prop+" < ?")
 			vals = append(vals, query.Values[0])
-		case types.Le:
+		case spec.Le:
 			cons = append(cons, query.Prop+" <= ?")
 			vals = append(vals, query.Values[0])
-		case types.In:
+		case spec.In:
 			cons = append(cons, query.Prop+" in (?)")
 			var vs []string
 			for _, iv := range query.Values {
 				vs = append(vs, fmt.Sprintf("%v", iv))
 			}
 			vals = append(vals, strings.Join(vs, ","))
-		case types.Ni:
+		case spec.Ni:
 			cons = append(cons, query.Prop+" not in (?)")
 			var vs []string
 			for _, iv := range query.Values {

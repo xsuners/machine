@@ -16,25 +16,25 @@ func (o *Object) key() string {
 	return fmt.Sprintf("%s-%s-%d", o.Database, o.Table, o.Id)
 }
 
-func (e *Object) Get(path string) (any, bool) {
+func (o *Object) Get(path string) (any, bool) {
 	ss := strings.SplitN(path, ".", 2)
 	switch len(ss) {
 	case 1:
 		switch ss[0] {
 		case "":
-			return e, true
+			return o, true
 		case "database":
-			return e.Database, true
+			return o.Database, true
 		case "table":
-			return e.Table, true
+			return o.Table, true
 		case "id":
-			return e.Id, true
+			return o.Id, true
 		case "props":
-			return e.Props, true
+			return o.Props, true
 		}
 	case 2:
 		if ss[0] == "props" {
-			return Props(e.Props).Get(ss[1])
+			return Props(o.Props).Get(ss[1])
 		}
 	}
 	return nil, false

@@ -1,6 +1,8 @@
 package node
 
-import "github.com/xsuners/machine/spec"
+import (
+	"github.com/xsuners/machine/spec"
+)
 
 type Builder func(*spec.Node) Node
 

@@ -1,14 +1,14 @@
 package database
 
 import (
-	"github.com/xsuners/machine/spec/data"
+	"github.com/xsuners/machine/spec"
 	"github.com/xsuners/msql.v2"
 )
 
 var registry = make(map[string]msql.DB)
 var cs []func()
 
-func Init(databases ...*data.Database) {
+func Init(databases ...*spec.Database) {
 	for _, db := range databases {
 		d, c, err := msql.New(
 			msql.IP(db.Host),

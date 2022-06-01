@@ -16,7 +16,6 @@ import (
 	"github.com/xsuners/machine/server/rpc"
 	"github.com/xsuners/machine/spec"
 	"github.com/xsuners/machine/spec/in"
-	"github.com/xsuners/machine/spec/types"
 )
 
 type Machine struct {
@@ -60,28 +59,28 @@ func (m *Machine) Boot() {
 			Selects: []*in.Select{
 				{
 					Prop: "id",
-					Kind: types.Int,
+					Kind: spec.Int,
 				},
 				{
 					Prop: "name",
-					Kind: types.String,
+					Kind: spec.String,
 				},
 				{
 					Prop: "phone",
-					Kind: types.String,
+					Kind: spec.String,
 				},
 			},
 			Queries: []*in.Query{
 				{
-					Type:   types.Gt,
+					Type:   spec.Gt,
 					Prop:   "name",
-					Kind:   types.String,
+					Kind:   spec.String,
 					Values: []any{"machine"},
 				},
 				{
-					Type:   types.Lt,
+					Type:   spec.Lt,
 					Prop:   "id",
-					Kind:   types.Int,
+					Kind:   spec.Int,
 					Values: []any{7},
 				},
 			},
@@ -96,12 +95,12 @@ func (m *Machine) Boot() {
 					Props: []*in.Prop{
 						{
 							Name:  "name",
-							Kind:  types.String,
+							Kind:  spec.String,
 							Value: "hello",
 						},
 						{
 							Name:  "phone",
-							Kind:  types.String,
+							Kind:  spec.String,
 							Value: "1313699",
 						},
 					},
@@ -113,16 +112,16 @@ func (m *Machine) Boot() {
 			Table:    "user",
 			Queries: []*in.Query{
 				{
-					Type:   types.Eq,
+					Type:   spec.Eq,
 					Prop:   "id",
-					Kind:   types.Int,
+					Kind:   spec.Int,
 					Values: []any{1},
 				},
 			},
 			Props: []*in.Prop{
 				{
 					Name:  "phone",
-					Kind:  types.String,
+					Kind:  spec.String,
 					Value: "1200",
 				},
 			},
@@ -136,13 +135,11 @@ func (m *Machine) Boot() {
 			},
 		},
 	}
-	// for i := 0; i < 2; i++ {
+
+	for _, r := range m.rpcs {
+		r.Handle(ctx)
+	}
 	for _, m := range m.mqs {
 		m.Handle(ctx)
 	}
-	// for _, r := range m.rpcs {
-	// 	r.Handle(ctx)
-	// }
-	// 	time.Sleep(time.Second * 5)
-	// }
 }

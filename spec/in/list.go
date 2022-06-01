@@ -46,7 +46,7 @@ func (l *List) Get(path string) (any, bool) {
 	return nil, false
 }
 
-func (list *List) Set(path string, data any) error {
+func (l *List) Set(path string, data any) error {
 	parts := strings.SplitN(path, ".", 3)
 	if len(parts) < 1 {
 		return errors.New("invalid paths")
@@ -57,7 +57,7 @@ func (list *List) Set(path string, data any) error {
 		if len(parts) > 1 {
 			return errors.New("path too long")
 		}
-		list.Database, ok = data.(string)
+		l.Database, ok = data.(string)
 		if !ok {
 			return errors.New("data type not string")
 		}
@@ -65,19 +65,19 @@ func (list *List) Set(path string, data any) error {
 		if len(parts) > 1 {
 			return errors.New("path too long")
 		}
-		list.Table, ok = data.(string)
+		l.Table, ok = data.(string)
 		if !ok {
 			return errors.New("data type not string")
 		}
 	case "selects":
 		if len(parts) == 1 {
-			list.Selects, ok = data.([]*Select)
+			l.Selects, ok = data.([]*Select)
 			if !ok {
 				return errors.New("data type not []*Select")
 			}
 			return nil
 		}
-		for _, s := range list.Selects {
+		for _, s := range l.Selects {
 			if s.Prop == parts[1] {
 				return s.Set(parts[2], data)
 			}
@@ -85,13 +85,13 @@ func (list *List) Set(path string, data any) error {
 		return fmt.Errorf("set list: prop %s not found", path)
 	case "queries":
 		if len(parts) == 1 {
-			list.Queries, ok = data.([]*Query)
+			l.Queries, ok = data.([]*Query)
 			if !ok {
 				return errors.New("data type not int")
 			}
 			return nil
 		}
-		for _, q := range list.Queries {
+		for _, q := range l.Queries {
 			if q.Prop == parts[1] {
 				return q.Set(parts[2], data)
 			}
@@ -101,7 +101,7 @@ func (list *List) Set(path string, data any) error {
 		if len(parts) > 1 {
 			return errors.New("path too long")
 		}
-		list.Page, ok = data.(int)
+		l.Page, ok = data.(int)
 		if !ok {
 			return errors.New("data type not int")
 		}
@@ -109,7 +109,7 @@ func (list *List) Set(path string, data any) error {
 		if len(parts) > 1 {
 			return errors.New("path too long")
 		}
-		list.Size, ok = data.(int)
+		l.Size, ok = data.(int)
 		if !ok {
 			return errors.New("data type not int")
 		}

@@ -5,25 +5,25 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/xsuners/machine/spec/types"
+	"github.com/xsuners/machine/spec"
 )
 
 type Select struct {
 	Prop string
-	Kind types.PK
+	Kind spec.PK
 }
 
-func (c *Select) Get(path string) (any, bool) {
+func (s *Select) Get(path string) (any, bool) {
 	ss := strings.SplitN(path, ".", 2)
 	switch len(ss) {
 	case 1:
 		switch ss[0] {
 		case "":
-			return c, true
+			return s, true
 		case "prop":
-			return c.Prop, true
+			return s.Prop, true
 		case "kind":
-			return c.Kind, true
+			return s.Kind, true
 		}
 	}
 	return nil, false
@@ -42,7 +42,7 @@ func (s *Select) Set(path string, data any) error {
 			return errors.New("set select: data not string")
 		}
 	case "kind":
-		s.Kind, ok = data.(types.PK)
+		s.Kind, ok = data.(spec.PK)
 		if !ok {
 			return errors.New("set select: data not pk")
 		}

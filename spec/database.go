@@ -1,4 +1,4 @@
-package data
+package spec
 
 type Database struct {
 	Host     string

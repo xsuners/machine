@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/xsuners/machine/spec/types"
+	"github.com/xsuners/machine/spec"
 )
 
 type Prop struct {
 	Name  string
-	Kind  types.PK
+	Kind  spec.PK
 	Value any
 }
 
@@ -28,7 +28,7 @@ func (p *Prop) Get(path string) (any, bool) {
 	return nil, false
 }
 
-func (prop *Prop) Set(path string, data any) error {
+func (p *Prop) Set(path string, data any) error {
 	parts := strings.SplitN(path, ".", 2)
 	if len(parts) != 1 {
 		return fmt.Errorf("path %s invalid", strings.Join(parts, "."))
@@ -36,17 +36,17 @@ func (prop *Prop) Set(path string, data any) error {
 	var ok bool
 	switch parts[0] {
 	case "name":
-		prop.Name, ok = data.(string)
+		p.Name, ok = data.(string)
 		if !ok {
 			return errors.New("set prop: data not string")
 		}
 	case "kind":
-		prop.Kind, ok = data.(types.PK)
+		p.Kind, ok = data.(spec.PK)
 		if !ok {
 			return errors.New("set prop: data not pk")
 		}
 	case "value":
-		prop.Value = data
+		p.Value = data
 	default:
 		return errors.New("set prop: no feild " + parts[0])
 	}

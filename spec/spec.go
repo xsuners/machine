@@ -1,10 +1,5 @@
 package spec
 
-import (
-	"github.com/xsuners/machine/spec/data"
-	"github.com/xsuners/machine/spec/ui"
-)
-
 type Mq struct {
 	Root    *Node
 	Subject string
@@ -28,7 +23,7 @@ type Machine struct {
 }
 
 type Spec struct {
-	Pages     []*ui.Page
-	Databases []*data.Database
+	Pages     []*Page
+	Databases []*Database
 	Machine   Machine
 }

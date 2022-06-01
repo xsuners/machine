@@ -28,7 +28,7 @@ func (c *Create) Get(path string) (any, bool) {
 	return nil, false
 }
 
-func (u *Create) Set(path string, data any) error {
+func (c *Create) Set(path string, data any) error {
 	parts := strings.SplitN(path, ".", 3)
 	if len(parts) < 1 {
 		return errors.New("invalid paths")
@@ -37,7 +37,7 @@ func (u *Create) Set(path string, data any) error {
 	switch parts[0] {
 	case "objects":
 		if len(parts) == 1 {
-			u.Objects, ok = data.([]*Object)
+			c.Objects, ok = data.([]*Object)
 			if !ok {
 				return errors.New("data type not int")
 			}

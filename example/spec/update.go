@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/xsuners/machine/context"
+	"github.com/xsuners/machine/spec"
 	"github.com/xsuners/machine/spec/in"
-	"github.com/xsuners/machine/spec/types"
 )
 
 func getupdate() {
@@ -15,8 +15,8 @@ func getupdate() {
 		Table:    "user",
 		Queries: []*in.Query{
 			{
-				Type:   types.Eq,
-				Kind:   types.Int,
+				Type:   spec.Eq,
+				Kind:   spec.Int,
 				Prop:   "id",
 				Values: []any{1},
 			},
@@ -25,7 +25,7 @@ func getupdate() {
 			{
 				Name:  "id",
 				Value: 1,
-				Kind:  types.Int,
+				Kind:  spec.Int,
 			},
 		},
 	}

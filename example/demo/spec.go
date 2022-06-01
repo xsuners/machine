@@ -2,13 +2,11 @@ package main
 
 import (
 	"github.com/xsuners/machine/spec"
-	"github.com/xsuners/machine/spec/data"
 	"github.com/xsuners/machine/spec/in"
-	"github.com/xsuners/machine/spec/types"
 )
 
 var s = &spec.Spec{
-	Databases: []*data.Database{
+	Databases: []*spec.Database{
 		{
 			Host:     "127.0.0.1",
 			Port:     3306,
@@ -88,16 +86,16 @@ var s = &spec.Spec{
 									Table:    "user",
 									Queries: []*in.Query{
 										{
-											Type:   types.Eq,
+											Type:   spec.Eq,
 											Prop:   "id",
-											Kind:   types.Int,
+											Kind:   spec.Int,
 											Values: []any{},
 										},
 									},
 									Props: []*in.Prop{
 										{
 											Name:  "username",
-											Kind:  types.String,
+											Kind:  spec.String,
 											Value: "属性",
 										},
 									},

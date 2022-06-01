@@ -1,4 +1,17 @@
-package ui
+package spec
+
+type Query struct {
+	Types  []QT
+	Prop   string
+	Kind   PK
+	Values []any
+}
+
+type Prop struct {
+	Name   string
+	Kind   PK
+	Values []any
+}
 
 type PT string
 

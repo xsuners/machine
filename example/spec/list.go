@@ -3,9 +3,10 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"go/types"
 
+	"github.com/xsuners/machine/spec"
 	"github.com/xsuners/machine/spec/in"
-	"github.com/xsuners/machine/spec/types"
 )
 
 func getlist() {
@@ -17,13 +18,13 @@ func getlist() {
 		Selects: []*in.Select{
 			{
 				Prop: "id",
-				Kind: types.Int,
+				Kind: spec.Int,
 			},
 		},
 		Queries: []*in.Query{
 			{
-				Type:   types.Eq,
-				Kind:   types.Int,
+				Type:   spec.Eq,
+				Kind:   spec.Int,
 				Prop:   "id",
 				Values: []any{1},
 			},
